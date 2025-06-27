@@ -1,38 +1,172 @@
+/* Basic Reset & Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.container {
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
+  padding: 0 20px;
+  background-color: #fff;
+  min-height: 80vh; /* Ensure container takes up height */
+  padding-bottom: 20px;
+}
+
+h1, h2, h3 {
+  color: #333;
+  margin-bottom: 0.7rem;
+}
+
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #23527c;
+}
+
+/* Navbar styling (complementing inline styles in Navbar.js) */
+/* Navbar.js already uses inline styles, this can be moved here later if preferred */
+
+/* Form Styling */
+form {
+  margin-bottom: 20px;
+}
+
+form div {
+  margin-bottom: 10px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+form input[type='text'],
+form input[type='email'],
+form input[type='password'],
+form input[type='number'],
+form input[type='tel'],
+form input[type='date'],
+form select,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box; /* So padding doesn't increase width */
+}
+
+form select {
+  height: 40px; /* Consistent height with inputs */
+}
+
+
+button, input[type='submit'] {
+  display: inline-block;
+  background: #5cb85c;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+button:hover, input[type='submit']:hover {
+  background: #4cae4c;
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table button {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    margin-right: 5px;
+}
+
+/* Utility Classes */
+.error-message {
+  color: red;
+  background: #fdd;
+  padding: 10px;
+  border: 1px solid red;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* App specific styles (can be removed if not needed) */
 .App {
-  text-align: center;
+  /* text-align: center; Remove if causing issues with new layout */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Layout for Sidebar */
+.app-container {
+  display: flex; /* Use flexbox for sidebar and main content layout */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.sidebar { /* This class can be added to the Sidebar component's div if preferred over inline styles */
+  /* Styles from Sidebar.js inline styles are primary for now: */
+  /* height: 100vh; */
+  /* width: 220px; */
+  /* position: fixed; */
+  /* z-index: 1; */
+  /* top: 0; */
+  /* left: 0; */
+  /* background-color: #2c3e50; */
+  /* padding-top: 20px; */
+  /* overflow-x: hidden; */
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
+}
+
+.main-content {
+  flex-grow: 1; /* Allow main content to take up remaining space */
+  margin-left: 220px; /* Same as sidebar width, adjust if sidebar width changes */
+  padding: 20px;
+  min-height: 100vh; /* Ensure it takes full viewport height */
+  box-sizing: border-box;
+  background-color: #f8f9fa; /* A light background for the content area */
+}
+
+/* Responsive consideration: On smaller screens, sidebar might hide or stack */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0; /* Remove margin if sidebar is hidden or stacked */
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  /* Further responsive styles for sidebar itself would be needed if it's to be collapsible */
 }

@@ -3,8 +3,17 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
+// Import route files
+const userRoutes = require('./routes/userRoutes');
+const vehicleRoutes = require('./routes/vehicleRoutes');
+const crewProfileRoutes = require('./routes/crewProfileRoutes');
+const routeDefinitionRoutes = require('./routes/routeDefinitionRoutes');
+
+// Import error handling middleware
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+
 // Connect to Database
-// connectDB(); // We'll uncomment this later when db.js is set up
+connectDB();
 
 const app = express();
 
@@ -12,13 +21,24 @@ const app = express();
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json()); // Middleware to parse JSON bodies
 
-// Basic Route
+// Basic Route for initial check
 app.get('/', (req, res) => {
   res.send('PSV Management API Running');
 });
 
+// Mount Routers
+app.use('/api/users', userRoutes);
+app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/crew-profiles', crewProfileRoutes);
+app.use('/api/routes', routeDefinitionRoutes);
+
+
+// Error Handling Middleware (should be last in the middleware stack)
+app.use(notFound); // Handle 404 errors for routes not found
+app.use(errorHandler); // Handle general errors
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });
