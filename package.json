@@ -1,0 +1,24 @@
+{
+  "name": "psv-sacco-mern-app",
+  "version": "1.0.0",
+  "description": "PSV Sacco Management Application using MERN stack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified for root\" && exit 1",
+    "server": "npm run dev --prefix server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \\"npm run server\\" \\"npm run client\\""
+  },
+  "keywords": [
+    "mern",
+    "react",
+    "node",
+    "psv",
+    "sacco"
+  ],
+  "author": "AI Agent Jules",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^6.2.1"
+  }
+}
