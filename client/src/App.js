@@ -16,6 +16,8 @@ import CrewListPage from './pages/CrewListPage';       // Placeholder for now
 import AddCrewProfilePage from './pages/AddCrewProfilePage'; // Placeholder for now
 import RouteListPage from './pages/RouteListPage';     // Placeholder for now
 import AddRoutePage from './pages/AddRoutePage';       // Placeholder for now
+import WelfarePage from './pages/WelfarePage';
+import PayrollPage from './pages/PayrollPage';         // Import PayrollPage
 
 import { AuthContext } from './context/AuthContext';
 
@@ -69,6 +71,9 @@ function App() {
           <PrivateRoute exact path="/routes" component={RouteListPage} />
           <PrivateRoute exact path="/routes/add" component={AddRoutePage} />
           {/* <PrivateRoute exact path="/routes/:idOrName/edit" component={EditRoutePage} /> */}
+
+          <PrivateRoute exact path="/welfare" component={WelfarePage} />
+          <PrivateRoute exact path="/payroll" component={PayrollPage} />
 
 
           {/* TODO: Add a 404 Not Found Page component */}
