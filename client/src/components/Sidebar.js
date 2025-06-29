@@ -81,6 +81,8 @@ const Sidebar = () => {
           <NavLink to="/vehicles" style={linkStyle} activeStyle={activeLinkStyle}>Vehicles</NavLink>
           <NavLink to="/crew" style={linkStyle} activeStyle={activeLinkStyle}>Crew</NavLink>
           <NavLink to="/routes" style={linkStyle} activeStyle={activeLinkStyle}>Routes</NavLink>
+          <NavLink to="/welfare" style={linkStyle} activeStyle={activeLinkStyle}>Welfare</NavLink>
+          <NavLink to="/payroll" style={linkStyle} activeStyle={activeLinkStyle}>Payroll</NavLink>
           {/* Add more links based on user role if needed */}
           {/* Example: user.role === 'admin' && <NavLink to="/admin/users" style={linkStyle} activeStyle={activeLinkStyle}>Manage Users</NavLink> */}
           <a href="#!" onClick={handleLogout} style={logoutButtonStyle}>Logout</a>
