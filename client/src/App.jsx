@@ -2,24 +2,24 @@ import React, { useEffect, useContext } from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import './App.css';
 
-import Sidebar from './components/Sidebar'; // Changed from Navbar
-import PrivateRoute from './components/PrivateRoute';
+import Sidebar from './components/Sidebar.jsx'; // Changed from Navbar
+import PrivateRoute from './components/PrivateRoute.jsx';
 
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
+import HomePage from './pages/HomePage.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import RegisterPage from './pages/RegisterPage.jsx';
+import DashboardPage from './pages/DashboardPage.jsx';
 // Import placeholder pages for main features (to be expanded later)
-import VehicleListPage from './pages/VehicleListPage'; // Placeholder for now
-import AddVehiclePage from './pages/AddVehiclePage';   // Placeholder for now
-import CrewListPage from './pages/CrewListPage';       // Placeholder for now
-import AddCrewProfilePage from './pages/AddCrewProfilePage'; // Placeholder for now
-import RouteListPage from './pages/RouteListPage';     // Placeholder for now
-import AddRoutePage from './pages/AddRoutePage';       // Placeholder for now
-import WelfarePage from './pages/WelfarePage';
-import PayrollPage from './pages/PayrollPage';         // Import PayrollPage
+import VehicleListPage from './pages/VehicleListPage.jsx'; // Placeholder for now
+import AddVehiclePage from './pages/AddVehiclePage.jsx';   // Placeholder for now
+import CrewListPage from './pages/CrewListPage.jsx';       // Placeholder for now
+import AddCrewProfilePage from './pages/AddCrewProfilePage.jsx'; // Placeholder for now
+import RouteListPage from './pages/RouteListPage.jsx';     // Placeholder for now
+import AddRoutePage from './pages/AddRoutePage.jsx';       // Placeholder for now
+import WelfarePage from './pages/WelfarePage.jsx';
+import PayrollPage from './pages/PayrollPage.jsx';         // Import PayrollPage
 
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from './context/AuthContext.jsx';
 
 
 function App() {

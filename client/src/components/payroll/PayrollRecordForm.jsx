@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import payrollService from '../../services/payrollService';
-import { AuthContext } from '../../context/AuthContext';
+import payrollService from '../../services/payrollService.js';
+import { AuthContext } from '../../context/AuthContext.jsx';
 // import userService from '../../services/userService'; // To fetch crew members
 
 const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing }) => {
