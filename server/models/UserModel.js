@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['sacco_member', 'driver', 'conductor', 'admin', 'route_marshal', 'mechanic'],
+    enum: ['sacco_member', 'driver', 'conductor', 'admin', 'route_marshal', 'mechanic', 'clerk'],
     default: 'sacco_member', // Default role, can be changed upon specific registration flows
   },
   memberId: { // Specific to SACCO members (owners)
