@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink, useHistory } from 'react-router-dom'; // Changed Link to NavLink
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 const Sidebar = () => {
   const { isAuthenticated, user, logout, loading } = useContext(AuthContext);

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import PayrollRecordForm from '../components/payroll/PayrollRecordForm';
-import PayrollRecordsList from '../components/payroll/PayrollRecordsList';
-import payrollService from '../services/payrollService';
-import { AuthContext } from '../context/AuthContext';
+import PayrollRecordForm from '../components/payroll/PayrollRecordForm.jsx';
+import PayrollRecordsList from '../components/payroll/PayrollRecordsList.jsx';
+import payrollService from '../services/payrollService.js';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 const PayrollPage = () => {
   const [records, setRecords] = useState([]);

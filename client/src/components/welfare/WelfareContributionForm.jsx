@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import welfareService from '../../services/welfareService';
-import { AuthContext } from '../../context/AuthContext';
+import welfareService from '../../services/welfareService.js';
+import { AuthContext } from '../../context/AuthContext.jsx';
 // import userService from '../../services/userService'; // To fetch Sacco members for dropdown
 
 const WelfareContributionForm = ({ onContributionAdded, editingContribution, clearEditing }) => {

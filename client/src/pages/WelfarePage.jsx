@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import WelfareContributionForm from '../components/welfare/WelfareContributionForm';
-import WelfareContributionsList from '../components/welfare/WelfareContributionsList';
-import welfareService from '../services/welfareService';
-import { AuthContext } from '../context/AuthContext';
+import WelfareContributionForm from '../components/welfare/WelfareContributionForm.jsx';
+import WelfareContributionsList from '../components/welfare/WelfareContributionsList.jsx';
+import welfareService from '../services/welfareService.js';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 const WelfarePage = () => {
   const [contributions, setContributions] = useState([]);
