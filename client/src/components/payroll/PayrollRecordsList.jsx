@@ -41,7 +41,7 @@ const PayrollRecordsList = ({ records, onEdit, isLoading }) => {
               <td>{record.status}</td>
               <td>{record.basisOfPayment}</td>
               <td>
-                <button onClick={() => onEdit(record)} style={{marginRight: '5px'}}>Edit/View</button>
+                <button onClick={() => onEdit(record)} className="btn btn-success btn-sm me-1">Edit/View</button>
                 {/* Delete is usually not an option, but status change to Cancelled */}
               </td>
             </tr>

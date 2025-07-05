@@ -40,8 +40,8 @@ const WelfareContributionsList = ({ contributions, onEdit, onDelete, isLoading }
               <td>{contrib.recordedBy ? contrib.recordedBy.name : 'N/A'}</td>
               <td>{contrib.remarks || '-'}</td>
               <td>
-                <button onClick={() => onEdit(contrib)} style={{marginRight: '5px'}}>Edit</button>
-                <button onClick={() => onDelete(contrib._id)} style={{backgroundColor: '#d9534f'}}>Delete</button>
+                <button onClick={() => onEdit(contrib)} className="btn btn-success btn-sm me-1">Edit</button>
+                <button onClick={() => onDelete(contrib._id)} className="btn btn-danger btn-sm">Delete</button>
               </td>
             </tr>
           ))}

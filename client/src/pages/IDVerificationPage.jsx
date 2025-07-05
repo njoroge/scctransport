@@ -188,7 +188,7 @@ const IDVerificationPage = () => {
           />
         </div>
         {message && <p style={{ color: message.startsWith('ID details submitted successfully') || message.startsWith('Verification successful') ? 'green' : 'red' }}>{message}</p>}
-        <button type="submit" disabled={isLoading}>
+        <button type="submit" className="btn btn-success" disabled={isLoading}>
           {isLoading ? 'Submitting...' : 'Submit for Verification'}
         </button>
       </form>

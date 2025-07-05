@@ -39,7 +39,7 @@ const VehicleListPage = () => {
     <div>
       <h2>Vehicle Management</h2>
       <Link to="/vehicles/add">
-        <button style={{ marginBottom: '1rem' }}>Add New Vehicle</button>
+        <button className="btn btn-success mb-3">Add New Vehicle</button>
       </Link>
       {vehicles.length === 0 ? (
         <p>No vehicles found.</p>
@@ -66,9 +66,9 @@ const VehicleListPage = () => {
                 <td>{vehicle.owner ? vehicle.owner.name : 'N/A'}</td>
                 <td>{vehicle.status}</td>
                 <td>
-                  <Link to={`/vehicles/${vehicle._id}`}>View</Link> | {' '}
-                  <Link to={`/vehicles/${vehicle._id}/edit`}>Edit</Link> | {' '}
-                  <button onClick={() => alert(`Delete ${vehicle._id}? Implement me!`)}>Delete</button>
+                  <Link to={`/vehicles/${vehicle._id}`} className="btn btn-success btn-sm me-1">View</Link>
+                  <Link to={`/vehicles/${vehicle._id}/edit`} className="btn btn-success btn-sm me-1">Edit</Link>
+                  <button onClick={() => alert(`Delete ${vehicle._id}? Implement me!`)} className="btn btn-danger btn-sm">Delete</button>
                 </td>
               </tr>
             ))}

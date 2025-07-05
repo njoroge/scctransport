@@ -126,7 +126,7 @@ const RegisterPage = () => {
           />
         </div>
         {(pageError || error) && <p style={{ color: 'red' }}>{pageError || error}</p>}
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="btn btn-success" disabled={loading}>
           {loading ? 'Registering...' : 'Register'}
         </button>
       </form>
