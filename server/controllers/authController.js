@@ -101,6 +101,7 @@ const loginUser = asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
       memberId: user.memberId,
+      idVerification: user.idVerification, // Include ID verification status
       token: generateToken(user._id, user.role),
     });
   } else {
@@ -128,6 +129,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       phoneNumber: user.phoneNumber,
       isActive: user.isActive,
       createdAt: user.createdAt,
+      idVerification: user.idVerification, // Include ID verification status
     });
   } else {
     res.status(404);

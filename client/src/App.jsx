@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { Switch, Route, useLocation } from 'react-router-dom';
+import { Switch, Route, useLocation, Redirect } from 'react-router-dom'; // Added Redirect
 import './App.css';
 
 import Sidebar from './components/Sidebar.jsx'; // Changed from Navbar
@@ -18,22 +18,24 @@ import RouteListPage from './pages/RouteListPage.jsx';     // Placeholder for no
 import AddRoutePage from './pages/AddRoutePage.jsx';       // Placeholder for now
 import WelfarePage from './pages/WelfarePage.jsx';
 import PayrollPage from './pages/PayrollPage.jsx';         // Import PayrollPage
+import IDVerificationPage from './pages/IDVerificationPage.jsx'; // Import IDVerificationPage
 
 import { AuthContext } from './context/AuthContext.jsx';
 
 
 function App() {
   const location = useLocation();
-  const { token, loadUser, isAuthenticated, user } = useContext(AuthContext);
+  // const { token, loadUser, isAuthenticated, user } = useContext(AuthContext); // loadUser removed
+  const { isAuthenticated, loading } = useContext(AuthContext); // Added loading
 
-  // This effect will run when the token changes (e.g., after login) or on initial app load.
-  // It ensures that if a token exists (e.g. from localStorage after a refresh, or just set by login),
-  // the user's data is loaded.
-  useEffect(() => {
-    if (token && !isAuthenticated && !user) { // Only load if token exists but user not loaded
-        loadUser();
-    }
-  }, [token, loadUser, isAuthenticated, user]);
+  // The useEffect in AuthProvider (dependent on state.token) should now handle
+  // loading the user when the token is available or changes.
+  // So, the useEffect here that called loadUser is no longer needed.
+  // useEffect(() => {
+  //   if (token && !isAuthenticated && !user) { // Only load if token exists but user not loaded
+  //       loadUser();
+  //   }
+  // }, [token, loadUser, isAuthenticated, user]);
 
 
   return (
@@ -48,10 +50,10 @@ function App() {
           <Route exact path="/" component={HomePage} />
           {/* Redirect authenticated users away from login/register */}
           <Route path="/login" render={(props) =>
-            isAuthenticated && !loading ? <Redirect to="/dashboard" /> : <LoginPage {...props} />
+            isAuthenticated && !loading ? <Redirect to="/dashboard" /> : <LoginPage {...props} /> // loading is now available
           } />
           <Route path="/register" render={(props) =>
-            isAuthenticated && !loading ? <Redirect to="/dashboard" /> : <RegisterPage {...props} />
+            isAuthenticated && !loading ? <Redirect to="/dashboard" /> : <RegisterPage {...props} /> // loading is now available
           } />
 
           {/* Protected Routes */}
@@ -74,6 +76,7 @@ function App() {
 
           <PrivateRoute exact path="/welfare" component={WelfarePage} />
           <PrivateRoute exact path="/payroll" component={PayrollPage} />
+          <PrivateRoute exact path="/verify-id" component={IDVerificationPage} />
 
 
           {/* TODO: Add a 404 Not Found Page component */}

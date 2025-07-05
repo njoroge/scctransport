@@ -8,8 +8,8 @@ const RegisterPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'sacco_member', // Default role
-    memberId: '',
+    // role: 'sacco_member', // Default role will be set by backend
+    memberId: '', // Keep for SACCO members, conditionally shown or handled
     phoneNumber: '',
   });
   const { register, error, loading, clearErrors } = useContext(AuthContext);
@@ -17,7 +17,7 @@ const RegisterPage = () => {
   const [pageError, setPageError] = useState('');
 
 
-  const { name, email, password, confirmPassword, role, memberId, phoneNumber } = formData;
+  const { name, email, password, confirmPassword, memberId, phoneNumber } = formData; // Removed role
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,18 +37,34 @@ const RegisterPage = () => {
         return;
     }
 
-    const registrationData = { name, email, password, role, memberId, phoneNumber };
+    // Role is no longer selected on the client-side.
+    // The backend will assign a default role (e.g., 'sacco_member').
+    // If 'sacco_member' is the default, memberId might still be relevant.
+    // For now, we assume 'sacco_member' is the default and thus memberId is relevant.
+    // This logic might need refinement based on how default role assignment affects required fields.
+    const registrationData = { name, email, password, memberId, phoneNumber };
 
-    // Remove memberId if not relevant for the role (e.g. admin)
-    if (role !== 'sacco_member') {
+    // If your backend default role is 'sacco_member', you might still want this check,
+    // or handle it on the backend. For now, let's assume if memberId is provided, it's for a sacco_member.
+    // If memberId is empty, and backend default is sacco_member, backend should ideally handle this.
+    // To simplify, let's assume memberId is optional for now from the client,
+    // and backend makes it mandatory if the default role is 'sacco_member'.
+    // OR, we assume the default role is NOT 'sacco_member' or does not require memberId.
+    // Given the previous logic, the default in backend is 'sacco_member'
+    // So, if user intends to be a sacco_member, they should provide it.
+    // Let's keep the memberId field and its validation if it's provided.
+    // The simplest approach for now: send memberId if provided. Backend handles validation based on assigned role.
+
+    if (registrationData.memberId && registrationData.memberId.trim() === '') {
+        // If user interacted with memberId field but left it blank, treat as not provided.
         delete registrationData.memberId;
-    } else if (!memberId) {
-        setPageError('Member ID is required for SACCO Members.');
-        return;
     }
+    // If the default role set by the backend is 'sacco_member' and memberId is not provided,
+    // the backend validation for memberId (if it's strictly required for sacco_members) should catch it.
+    // This simplifies client form a lot.
 
 
-    const result = await register(registrationData);
+    const result = await register(registrationData); // Pass data without role
     if (result && result.success) {
       // Handle successful registration, e.g., redirect to login or show success message
       history.push('/login?registration=success'); // Redirect to login with a success query param
@@ -84,30 +100,21 @@ const RegisterPage = () => {
             required
           />
         </div>
+        {/* Role selection removed. Default role will be assigned by the backend. */}
+        {/* The Member ID field is kept as the default role is 'sacco_member'.
+            If the default role changes or doesn't need memberId, this can be removed or conditionally rendered.
+            For now, we assume users registering are primarily sacco_members or the backend handles non-memberId cases.
+         */}
         <div>
-          <label htmlFor="role">Role:</label>
-          <select id="role" name="role" value={role} onChange={handleChange}>
-            <option value="sacco_member">SACCO Member</option>
-            <option value="driver">Driver</option>
-            <option value="conductor">Conductor</option>
-            <option value="admin">Admin</option>
-            <option value="route_marshal">Route Marshal</option>
-            <option value="mechanic">Mechanic</option>
-          </select>
+          <label htmlFor="memberId">Member ID (if applicable):</label>
+          <input
+            type="text"
+            id="memberId"
+            name="memberId"
+            value={memberId}
+            onChange={handleChange}
+          />
         </div>
-        {role === 'sacco_member' && (
-          <div>
-            <label htmlFor="memberId">Member ID:</label>
-            <input
-              type="text"
-              id="memberId"
-              name="memberId"
-              value={memberId}
-              onChange={handleChange}
-              // required={role === 'sacco_member'} // Handled in submit
-            />
-          </div>
-        )}
         <div>
           <label htmlFor="phoneNumber">Phone Number:</label>
           <input
