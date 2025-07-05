@@ -48,6 +48,40 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   // Future fields: profilePictureUrl, etc.
+
+  idVerification: {
+    status: {
+      type: String,
+      enum: ['not_verified', 'pending', 'verified', 'failed', 'needs_review'],
+      default: 'not_verified',
+    },
+    nationalIdNumber: { // Consider encryption for this field
+      type: String,
+      trim: true,
+      // select: false, // Potentially hide from default queries unless explicitly asked
+    },
+    fullNameOnId: { // As it appears on the ID document
+      type: String,
+      trim: true,
+    },
+    dobOnId: { // Date of Birth on the ID document
+      type: Date,
+    },
+    lastAttemptAt: { // Timestamp of the last verification attempt
+      type: Date,
+    },
+    verifiedAt: { // Timestamp of successful verification
+      type: Date,
+    },
+    providerReference: { // ID or reference from the verification service provider
+      type: String,
+      trim: true,
+    },
+    remarks: { // For storing any notes, e.g., reason for failure or manual review notes
+      type: String,
+      trim: true,
+    }
+  }
 }, {
   timestamps: true, // Adds createdAt and updatedAt timestamps automatically
 });

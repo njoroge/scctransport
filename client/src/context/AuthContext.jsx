@@ -80,31 +80,43 @@ export const AuthContext = createContext(initialState);
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Function to load user from token if present in localStorage (e.g., on app load/refresh)
-  const loadUser = async () => {
-    const token = localStorage.getItem('psv_token');
-    if (token) {
-      authService.setAuthToken(token); // Set token for authService/axios instance
-      try {
-        const userData = await authService.getCurrentUser();
-        dispatch({ type: USER_LOADED, payload: userData });
-      } catch (err) {
-        // If getCurrentUser throws (e.g. 401), it means token is invalid/expired
-        dispatch({ type: AUTH_ERROR, payload: 'Session expired or token invalid. Please login again.' });
-        authService.logout(); // Ensure local storage and axios headers are cleared
-      }
-    } else {
-      // No token found, dispatch AUTH_ERROR to ensure loading is false and isAuthenticated is false
-      // This is important for initial load if there's no token.
-      dispatch({ type: AUTH_ERROR, payload: null }); // No error message needed if no token
-    }
-  };
-
-  // Attempt to load user when the app initializes
+  // Attempt to load user when the app initializes or token changes
   useEffect(() => {
+    let isMounted = true; // Flag to track mounted status
+
+    const loadUser = async () => {
+      const token = localStorage.getItem('psv_token');
+      if (token) {
+        authService.setAuthToken(token);
+        try {
+          const userData = await authService.getCurrentUser();
+          if (isMounted) {
+            dispatch({ type: USER_LOADED, payload: userData });
+          }
+        } catch (err) {
+          if (isMounted) {
+            dispatch({ type: AUTH_ERROR, payload: 'Session expired or token invalid. Please login again.' });
+          }
+          // authService.logout(); // logout() also dispatches LOGOUT which might be redundant if AUTH_ERROR is caught
+                                // and it might also try to update state.
+                                // For now, let's rely on AUTH_ERROR to clear state.
+                                // If logout is called, it should also check isMounted if it dispatches.
+        }
+      } else {
+        if (isMounted) {
+          // No token found, dispatch AUTH_ERROR to ensure loading is false and isAuthenticated is false
+          dispatch({ type: AUTH_ERROR, payload: null });
+        }
+      }
+    };
+
     loadUser();
-    // eslint-disable-next-line
-  }, []);
+
+    return () => {
+      isMounted = false; // Set to false when component unmounts
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.token]); // Rerun if token changes (e.g. after login/logout)
 
 
   // Login user action
@@ -164,7 +176,7 @@ export const AuthProvider = ({ children }) => {
         token: state.token,
         loading: state.loading,
         error: state.error,
-        loadUser, // Expose if needed by other parts of app, e.g. after token refresh
+        // loadUser is no longer explicitly provided; useEffect handles loading based on token.
         login,
         register,
         logout,

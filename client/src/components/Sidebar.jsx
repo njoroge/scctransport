@@ -72,6 +72,11 @@ const Sidebar = () => {
         <div style={userInfoStyle}>
           <h4>{user.name}</h4>
           <small>({user.role})</small>
+          {user.idVerification && (
+            <small style={{ display: 'block', marginTop: '5px', color: user.idVerification.status === 'verified' ? 'lightgreen' : 'yellow' }}>
+              ID Status: {user.idVerification.status.replace('_', ' ')}
+            </small>
+          )}
         </div>
       )}
 
@@ -83,6 +88,7 @@ const Sidebar = () => {
           <NavLink to="/routes" style={linkStyle} activeStyle={activeLinkStyle}>Routes</NavLink>
           <NavLink to="/welfare" style={linkStyle} activeStyle={activeLinkStyle}>Welfare</NavLink>
           <NavLink to="/payroll" style={linkStyle} activeStyle={activeLinkStyle}>Payroll</NavLink>
+          <NavLink to="/verify-id" style={linkStyle} activeStyle={activeLinkStyle}>ID Verification</NavLink> {/* Added ID Verification Link */}
           {/* Add more links based on user role if needed */}
           {/* Example: user.role === 'admin' && <NavLink to="/admin/users" style={linkStyle} activeStyle={activeLinkStyle}>Manage Users</NavLink> */}
           <a href="#!" onClick={handleLogout} style={logoutButtonStyle}>Logout</a>

@@ -10,6 +10,7 @@ const crewProfileRoutes = require('./routes/crewProfileRoutes');
 const routeDefinitionRoutes = require('./routes/routeDefinitionRoutes');
 const welfareRoutes = require('./routes/welfareRoutes');
 const payrollRoutes = require('./routes/payrollRoutes'); // Import payroll routes
+const verificationRoutes = require('./routes/verificationRoutes'); // Import verification routes
 
 // Import error handling middleware
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
@@ -35,6 +36,7 @@ app.use('/api/crew-profiles', crewProfileRoutes);
 app.use('/api/routes', routeDefinitionRoutes);
 app.use('/api/welfare', welfareRoutes);
 app.use('/api/payroll', payrollRoutes); // Mount payroll routes
+app.use('/api/verification', verificationRoutes); // Mount verification routes
 
 
 // Error Handling Middleware (should be last in the middleware stack)
