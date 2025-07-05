@@ -175,11 +175,11 @@ const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing
           <input type="number" name="amount" id={`deductionAmount-${index}`} value={deduction.amount} onChange={(e) => handleDeductionChange(index, e)} min="0" step="0.01" />
 
           {formData.deductions.length > 1 && (
-            <button type="button" onClick={() => removeDeduction(index)} style={{backgroundColor: '#d9534f', marginTop: '5px'}}>Remove Deduction</button>
+            <button type="button" onClick={() => removeDeduction(index)} className="btn btn-danger btn-sm mt-1">Remove Deduction</button>
           )}
         </div>
       ))}
-      <button type="button" onClick={addDeduction} style={{backgroundColor: '#5bc0de', marginBottom: '10px'}}>Add Deduction</button>
+      <button type="button" onClick={addDeduction} className="btn btn-info btn-sm mb-2">Add Deduction</button>
 
       <div>
           <p><strong>Calculated Net Pay: {calculateNetPay()}</strong></p>
@@ -215,11 +215,11 @@ const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing
         <textarea name="notes" value={formData.notes} onChange={handleChange} rows="3"></textarea>
       </div>
 
-      <button type="submit" disabled={loading}>
+      <button type="submit" className="btn btn-success" disabled={loading}>
         {loading ? (editingRecord ? 'Updating...' : 'Creating...') : (editingRecord ? 'Update Record' : 'Create Record')}
       </button>
       {editingRecord && (
-          <button type="button" onClick={clearEditing} style={{marginLeft: '10px', backgroundColor: '#aaa'}}>
+          <button type="button" onClick={clearEditing} className="btn btn-secondary ms-2">
               Cancel Edit
           </button>
       )}

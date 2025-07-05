@@ -217,11 +217,11 @@ const WelfareContributionForm = ({ onContributionAdded, editingContribution, cle
         ></textarea>
       </div>
 
-      <button type="submit" disabled={loading}>
+      <button type="submit" className="btn btn-success" disabled={loading}>
         {loading ? (editingContribution ? 'Updating...' : 'Recording...') : (editingContribution ? 'Update Contribution' : 'Record Contribution')}
       </button>
       {editingContribution && (
-          <button type="button" onClick={clearEditing} style={{marginLeft: '10px', backgroundColor: '#aaa'}}>
+          <button type="button" onClick={clearEditing} className="btn btn-secondary ms-2">
               Cancel Edit
           </button>
       )}

@@ -5,9 +5,35 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Light Theme */
+body.light {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Dark Theme */
+body.dark {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Add more specific styles for components as needed */
+body.dark .card { /* Example for Bootstrap cards */
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-color: #333333;
+}
+
+body.dark .btn-success { /* Ensure success buttons are visible in dark mode */
+  color: #ffffff; /* Or a contrasting color */
+}
+
+/* You might need to adjust other component styles for dark mode */
