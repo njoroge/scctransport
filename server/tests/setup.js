@@ -22,12 +22,21 @@ beforeAll(async () => {
   try {
     // Ensure any existing connection is closed before attempting a new one,
     // though Mongoose handles this reasonably well.
-    if (mongoose.connection.readyState !== 0) {
-      await mongoose.disconnect();
+    // if (mongoose.connection.readyState !== 0) { // Handled by jest-mongodb preset
+    //   await mongoose.disconnect();
+    // }
+    // await mongoose.connect(process.env.MONGO_URL, mongooseOptions); // Handled by jest-mongodb preset
+    // The preset should make the DB available. If specific options are needed, they should be configured via jest-mongodb.
+    if (!process.env.MONGO_URL && !process.env.MONGO_URI) {
+        console.warn('MONGO_URL or MONGO_URI not set by jest-mongodb. Mongoose will not connect here.');
+    } else {
+        // If we still want to ensure mongoose is connected using the preset's URL, we can do it here,
+        // but it might be redundant if application code (like config/db.js) connects on first use.
+        // For now, assume the preset + application's connectDB is sufficient.
+        console.log('tests/setup.js: MONGO_URL should be set by preset. Application will connect as needed.');
     }
-    await mongoose.connect(process.env.MONGO_URL, mongooseOptions);
   } catch (err) {
-    console.error('Mongoose connection error in beforeAll:', err.message);
+    console.error('Error in tests/setup.js beforeAll (related to Mongoose connection attempt):', err.message);
     // Propagate the error to fail tests immediately if connection fails.
     throw err;
   }
@@ -47,7 +56,7 @@ beforeAll(async () => {
 // A global afterEach might be too broad or interfere with per-suite setups.
 
 afterAll(async () => {
-  if (mongoose.connection.readyState !== 0) {
-    await mongoose.disconnect();
-  }
+  // if (mongoose.connection.readyState !== 0) { // Handled by jest-mongodb preset
+  //   await mongoose.disconnect();
+  // }
 });
