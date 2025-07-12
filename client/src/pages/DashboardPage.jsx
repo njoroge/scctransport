@@ -26,6 +26,7 @@ const DashboardPage = () => {
         <li><Link to="/vehicles">Manage Vehicles</Link></li>
         <li><Link to="/crew">Manage Crew</Link></li>
         <li><Link to="/routes">Manage Routes</Link></li>
+        <li><Link to="/tracking">Real-time Tracking</Link></li>
         {/* Add more links based on user role and features */}
       </ul>
 

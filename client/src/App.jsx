@@ -19,6 +19,7 @@ import AddRoutePage from './pages/AddRoutePage.jsx';       // Placeholder for no
 import WelfarePage from './pages/WelfarePage.jsx';
 import PayrollPage from './pages/PayrollPage.jsx';         // Import PayrollPage
 import IDVerificationPage from './pages/IDVerificationPage.jsx'; // Import IDVerificationPage
+import RealTimeTrackingPage from './pages/RealTimeTrackingPage.jsx'; // Import RealTimeTrackingPage
 
 import { AuthContext } from './context/AuthContext.jsx';
 
@@ -77,6 +78,7 @@ function App() {
           <PrivateRoute exact path="/welfare" component={WelfarePage} />
           <PrivateRoute exact path="/payroll" component={PayrollPage} />
           <PrivateRoute exact path="/verify-id" component={IDVerificationPage} />
+          <PrivateRoute exact path="/tracking" component={RealTimeTrackingPage} />
 
 
           {/* TODO: Add a 404 Not Found Page component */}
