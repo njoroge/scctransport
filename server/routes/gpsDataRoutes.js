@@ -8,6 +8,7 @@ const { protect } = require('../middleware/authMiddleware'); // Assuming you wan
 // @access  Private (e.g., only authenticated devices/services can submit)
 router.post('/', protect, gpsDataController.submitGPSData);
 
-// Future routes for getting locations will be added here
+router.get('/latest', protect, gpsDataController.getLatestGpsData);
+router.get('/:vehicleId', protect, gpsDataController.getGpsDataForVehicle);
 
 module.exports = router;

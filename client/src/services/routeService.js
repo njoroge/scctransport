@@ -39,12 +39,24 @@ const createRoute = async (routeData) => {
 
 // Add getRouteByIdOrName, updateRoute, deleteRoute later
 
+const deleteRoute = async (routeId) => {
+  try {
+    await axios.delete(`${API_URL}/${routeId}`);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    throw new Error(`Could not delete route: ${message}`);
+  }
+};
+
 const routeService = {
   getAllRoutes,
   createRoute,
+  deleteRoute,
   // getRouteByIdOrName,
   // updateRoute,
-  // deleteRoute
 };
 
 export default routeService;

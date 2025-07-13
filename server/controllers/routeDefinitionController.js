@@ -29,6 +29,7 @@ const findRouteByIdentifier = async (identifier) => {
  * @access  Private (Admin or Route Manager)
  */
 const defineNewRoute = asyncHandler(async (req, res) => {
+  console.log('defining new route');
   const {
     routeName,
     routeNumber,

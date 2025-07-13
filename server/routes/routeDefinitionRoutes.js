@@ -14,10 +14,8 @@ const {
 const { protect, authorize } = require('../middleware/authMiddleware');
 
 // --- Base Route for Creating and Listing ---
-router
-  .route('/')
-  .post(protect, authorize('admin', 'route_marshal'), defineNewRoute) // Admin or Route Manager can define new routes
-  .get(protect, getAllRoutes); // All authenticated users can view routes (with pagination)
+router.post('/', protect, authorize('admin', 'route_marshal'), defineNewRoute); // Admin or Route Manager can define new routes
+router.get('/', protect, getAllRoutes); // All authenticated users can view routes (with pagination)
 
 // --- Search Route ---
 // IMPORTANT: This needs to be defined *before* routes with dynamic params like /:idOrName
