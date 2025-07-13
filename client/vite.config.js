@@ -15,5 +15,8 @@ export default defineConfig({
   },
   build: {
     minify: false
+  },
+  optimizeDeps: {
+    include: ['leaflet-geosearch'],
   }
 })

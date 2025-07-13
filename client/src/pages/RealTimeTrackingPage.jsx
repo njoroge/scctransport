@@ -1,46 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import gpsService from '../services/gpsService';
 
-// You might need to import the gpsService to fetch data
-// import { getLatestGpsData } from '../services/gpsService';
+// Fix for default icon issue with webpack
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+});
 
 const RealTimeTrackingPage = () => {
-  const [vehicles, setVehicles] = useState([]); // To hold vehicle GPS data
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
-  const [mapCenter, setMapCenter] = useState([-1.286389, 36.817223]); // Default to Nairobi
+  const [vehicles, setVehicles] = useState([]);
+  const [error, setError] = useState('');
+  const mapRef = useRef();
 
-  // Dummy data for now
+  const mapCenter = [-1.286389, 36.817223]; // Nairobi
+
   useEffect(() => {
-    // In the future, this will be replaced by a call to the gpsService
-    const dummyVehicles = [
-      { id: 1, name: 'Vehicle A', position: [-1.286389, 36.817223] },
-      { id: 2, name: 'Vehicle B', position: [-1.292066, 36.821945] },
-    ];
-    setVehicles(dummyVehicles);
+    const fetchGpsData = async () => {
+      try {
+        const data = await gpsService.getLatestGpsData();
+        setVehicles(data);
+      } catch (err) {
+        setError('Could not fetch GPS data.');
+      }
+    };
+
+    fetchGpsData();
+    const interval = setInterval(fetchGpsData, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <div>
       <h2>Real-Time Vehicle Tracking</h2>
-      <div>
-        <label htmlFor="vehicle-select">Select a vehicle:</label>
-        <select id="vehicle-select" onChange={(e) => setSelectedVehicle(e.target.value)}>
-          <option value="">--All Vehicles--</option>
-          {vehicles.map(v => (
-            <option key={v.id} value={v.id}>{v.name}</option>
-          ))}
-        </select>
-      </div>
-      <MapContainer center={mapCenter} zoom={13} style={{ height: '500px', width: '100%' }}>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <MapContainer center={mapCenter} zoom={13} style={{ height: '500px', width: '100%' }} ref={mapRef}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {vehicles.map(vehicle => (
-          <Marker key={vehicle.id} position={vehicle.position}>
+        {vehicles.map((vehicle) => (
+          <Marker key={vehicle.vehicleId} position={[vehicle.latitude, vehicle.longitude]}>
             <Popup>
-              {vehicle.name}
+              Vehicle ID: {vehicle.vehicleId}<br />
+              Speed: {vehicle.speed} km/h<br />
+              Last Updated: {new Date(vehicle.timestamp).toLocaleString()}
             </Popup>
           </Marker>
         ))}

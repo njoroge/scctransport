@@ -51,6 +51,40 @@ exports.submitGPSData = async (req, res) => {
   }
 };
 
-// Future controller functions for getting locations will be added here
-// exports.getLatestLocation = async (req, res) => { ... };
-// exports.getActiveVehiclesLocations = async (req, res) => { ... };
+// @desc    Get the latest GPS data for all active vehicles
+// @route   GET /api/gps-data/latest
+// @access  Private
+exports.getLatestGpsData = async (req, res) => {
+    try {
+        // Find the most recent GPS entry for each vehicle
+        const latestGpsData = await GPSData.aggregate([
+            { $sort: { timestamp: -1 } },
+            { $group: {
+                _id: "$vehicleId",
+                latest_doc: { $first: "$$ROOT" }
+            }},
+            { $replaceRoot: { newRoot: "$latest_doc" } }
+        ]);
+
+        res.json(latestGpsData);
+    } catch (error) {
+        console.error('Error fetching latest GPS data:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// @desc    Get GPS data for a specific vehicle
+// @route   GET /api/gps-data/:vehicleId
+// @access  Private
+exports.getGpsDataForVehicle = async (req, res) => {
+    try {
+        const gpsData = await GPSData.find({ vehicleId: req.params.vehicleId }).sort({ timestamp: -1 });
+        if (!gpsData) {
+            return res.status(404).json({ message: 'GPS data not found for this vehicle' });
+        }
+        res.json(gpsData);
+    } catch (error) {
+        console.error('Error fetching GPS data for vehicle:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
