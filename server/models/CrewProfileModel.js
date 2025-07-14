@@ -33,21 +33,37 @@ const crewProfileSchema = new mongoose.Schema({
     trim: true,
     // Consider adding a validation regex for Kenyan phone numbers
   },
-  address: {
-    type: String,
-    trim: true,
+  contactInformation: {
+    address: {
+      type: String,
+      trim: true,
+    },
+    phoneNumber: {
+      type: String,
+      trim: true,
+    }
   },
-  nextOfKinName: {
-    type: String,
-    trim: true,
+  nextOfKin: {
+    name: {
+      type: String,
+      trim: true,
+    },
+    phoneNumber: {
+      type: String,
+      trim: true,
+    }
   },
-  nextOfKinPhone: {
+  employmentType: {
     type: String,
-    trim: true,
+    enum: ['permanent', 'contract', 'casual'],
+    default: 'permanent',
   },
-  employmentDate: {
+  startDate: {
     type: Date,
     default: Date.now,
+  },
+  endDate: {
+    type: Date,
   },
   photoUrl: { // For ID cards, system profile, etc.
     type: String,
