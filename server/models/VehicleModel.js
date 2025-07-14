@@ -60,16 +60,16 @@ const vehicleSchema = new mongoose.Schema({
     required: [true, 'Vehicle owner (SACCO member) is required.'],
     // Validate that the user has the 'sacco_member' role if strict linking is needed here
   },
-  assignedDriver: {
+  driver: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // User must have 'driver' role
+    ref: 'User',
     optional: true,
   },
-  assignedConductor: {
+  conductors: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // User must have 'conductor' role
+    ref: 'User',
     optional: true,
-  },
+  }],
   status: {
     type: String,
     enum: ['Active', 'Inactive', 'Under Maintenance', 'Awaiting Inspection', 'Awaiting Insurance', 'Scrapped'],

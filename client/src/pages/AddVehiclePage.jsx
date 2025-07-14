@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import vehicleService from '../services/vehicleService';
+import crewService from '../services/crewService';
 import { AuthContext } from '../context/AuthContext';
 
 const AddVehiclePage = () => {
@@ -10,13 +11,33 @@ const AddVehiclePage = () => {
     logbookNumber: '',
     passengerCapacity: '',
     owner: '', // Will be UserId of Sacco Member
+    driver: '',
+    conductors: [],
   });
+  const [drivers, setDrivers] = useState([]);
+  const [conductors, setConductors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { token, user } = useContext(AuthContext); // Assuming user object has role for authorization checks if needed
   const history = useHistory();
 
-  const { numberPlate, vehicleType, logbookNumber, passengerCapacity, owner } = formData;
+  useEffect(() => {
+    const fetchCrew = async () => {
+      try {
+        const [drivers, conductors] = await Promise.all([
+          crewService.getAllCrewProfiles('driver'),
+          crewService.getAllCrewProfiles('conductor'),
+        ]);
+        setDrivers(drivers);
+        setConductors(conductors);
+      } catch (error) {
+        setError('Failed to fetch crew members.');
+      }
+    };
+    fetchCrew();
+  }, []);
+
+  const { numberPlate, vehicleType, logbookNumber, passengerCapacity, owner, driver, conductors: selectedConductors } = formData;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -111,6 +132,25 @@ const AddVehiclePage = () => {
             required
             placeholder="Enter User ID of the owner"
           />
+        </div>
+
+        <div>
+          <label htmlFor="driver">Assign Driver:</label>
+          <select name="driver" value={driver} onChange={handleChange}>
+            <option value="">Select a Driver</option>
+            {drivers.map(d => (
+              <option key={d.user._id} value={d.user._id}>{d.user.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="conductors">Assign Conductors:</label>
+          <select name="conductors" value={selectedConductors} onChange={handleChange} multiple>
+            {conductors.map(c => (
+              <option key={c.user._id} value={c.user._id}>{c.user.name}</option>
+            ))}
+          </select>
         </div>
 
         {error && <p style={{ color: 'red' }}>{error}</p>}

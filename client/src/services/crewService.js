@@ -7,9 +7,10 @@ const API_URL = '/api/crew-profiles'; // Using proxy
 /**
  * Get all crew profiles
  */
-const getAllCrewProfiles = async () => {
+const getAllCrewProfiles = async (role) => {
   try {
-    const response = await axios.get(API_URL);
+    const params = role ? { params: { role } } : {};
+    const response = await axios.get(API_URL, params);
     return response.data;
   } catch (error) {
     const message =
