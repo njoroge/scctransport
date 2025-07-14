@@ -60,6 +60,18 @@ const userSchema = new mongoose.Schema({
       trim: true,
       // select: false, // Potentially hide from default queries unless explicitly asked
     },
+    kraPin: {
+      type: String,
+      trim: true,
+    },
+    nssfNumber: {
+      type: String,
+      trim: true,
+    },
+    nhifNumber: {
+      type: String,
+      trim: true,
+    },
     fullNameOnId: { // As it appears on the ID document
       type: String,
       trim: true,
@@ -78,6 +90,20 @@ const userSchema = new mongoose.Schema({
       trim: true,
     },
     remarks: { // For storing any notes, e.g., reason for failure or manual review notes
+      type: String,
+      trim: true,
+    }
+  },
+  bankDetails: {
+    bankName: {
+      type: String,
+      trim: true,
+    },
+    branchName: {
+      type: String,
+      trim: true,
+    },
+    accountNumber: {
       type: String,
       trim: true,
     }

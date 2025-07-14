@@ -18,11 +18,12 @@ const PayrollRecordsList = ({ records, onEdit, isLoading }) => {
             <th>Pay Period</th>
             <th>Crew Member</th>
             <th>Gross Pay</th>
-            <th>Deductions</th>
+            <th>Statutory Deductions</th>
+            <th>SACCO Deductions</th>
+            <th>Other Deductions</th>
+            <th>Total Deductions</th>
             <th>Net Pay</th>
-            <th>Payment Date</th>
             <th>Status</th>
-            <th>Basis</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -35,14 +36,26 @@ const PayrollRecordsList = ({ records, onEdit, isLoading }) => {
               </td>
               <td>{record.crewMember ? record.crewMember.name : 'N/A'}</td>
               <td>{record.grossPay.toFixed(2)}</td>
-              <td>{record.deductionsTotal.toFixed(2)}</td>
+              <td>
+                PAYE: {record.statutoryDeductions.paye.toFixed(2)}<br/>
+                NSSF: {record.statutoryDeductions.nssf.toFixed(2)}<br/>
+                SHIF: {record.statutoryDeductions.shif.toFixed(2)}<br/>
+                AHL: {record.statutoryDeductions.affordableHousingLevy.toFixed(2)}
+              </td>
+              <td>
+                Shares: {record.saccoDeductions.shares.toFixed(2)}<br/>
+                Loan: {record.saccoDeductions.loanRepayment.toFixed(2)}<br/>
+                Deposits: {record.saccoDeductions.memberDeposits.toFixed(2)}
+              </td>
+              <td>
+                {record.otherDeductions.map(d => `${d.type}: ${d.amount.toFixed(2)}`).join(<br/>)}
+              </td>
+              <td>{record.totalDeductions.toFixed(2)}</td>
               <td>{record.netPay.toFixed(2)}</td>
-              <td>{new Date(record.paymentDate).toLocaleDateString()}</td>
               <td>{record.status}</td>
-              <td>{record.basisOfPayment}</td>
               <td>
                 <button onClick={() => onEdit(record)} className="btn btn-success btn-sm me-1">Edit/View</button>
-                {/* Delete is usually not an option, but status change to Cancelled */}
+                <a href={`/payslip/${record._id}`} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">Generate Payslip</a>
               </td>
             </tr>
           ))}

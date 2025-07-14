@@ -1,21 +1,45 @@
 const mongoose = require('mongoose');
 
-const deductionSchema = new mongoose.Schema({
-  type: { // e.g., 'NSSF', 'NHIF', 'Loan Repayment', 'Welfare Deduction', 'Fine', 'Other'
+const earningSchema = new mongoose.Schema({
+  type: {
     type: String,
-    required: [true, 'Deduction type is required.'],
-    trim: true,
-  },
-  description: { // Optional further details
-    type: String,
-    trim: true,
+    required: true,
+    enum: ['basic', 'commission', 'overtime', 'bonus', 'allowance']
   },
   amount: {
     type: Number,
-    required: [true, 'Deduction amount is required.'],
-    min: [0, 'Deduction amount cannot be negative.']
-  }
-}, { _id: false }); // No separate _id for sub-documents unless needed
+    required: true,
+    min: 0
+  },
+  description: String
+}, { _id: false });
+
+const statutoryDeductionSchema = new mongoose.Schema({
+  paye: { type: Number, default: 0 },
+  nssf: { type: Number, default: 0 },
+  shif: { type: Number, default: 0 },
+  affordableHousingLevy: { type: Number, default: 0 },
+  helb: { type: Number, default: 0 }
+}, { _id: false });
+
+const saccoDeductionSchema = new mongoose.Schema({
+  shares: { type: Number, default: 0 },
+  loanRepayment: { type: Number, default: 0 },
+  memberDeposits: { type: Number, default: 0 }
+}, { _id: false });
+
+const otherDeductionSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    required: true
+  },
+  amount: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  description: String
+}, { _id: false });
 
 const payrollRecordSchema = new mongoose.Schema({
   crewMember: { // User ID of the crew member (driver, conductor, mechanic, route_marshal)
@@ -31,21 +55,23 @@ const payrollRecordSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'Pay period end date is required.'],
   },
-  grossPay: { // Calculated or entered before deductions
+  earnings: [earningSchema],
+  grossPay: {
     type: Number,
-    required: [true, 'Gross pay is required.'],
-    min: [0, 'Gross pay cannot be negative.']
+    required: true,
+    min: 0
   },
-  deductions: [deductionSchema], // Array of deduction sub-documents
-  deductionsTotal: { // Sum of all deduction amounts
+  statutoryDeductions: statutoryDeductionSchema,
+  saccoDeductions: saccoDeductionSchema,
+  otherDeductions: [otherDeductionSchema],
+  totalDeductions: {
     type: Number,
-    default: 0,
-    min: [0, 'Total deductions cannot be negative.']
+    required: true,
+    min: 0
   },
-  netPay: { // Gross Pay - Deductions Total
+  netPay: {
     type: Number,
-    required: [true, 'Net pay is required.'],
-    // min: [0, 'Net pay cannot be negative.'] // Net pay can be negative if deductions exceed gross
+    required: true
   },
   paymentDate: {
     type: Date,
@@ -92,11 +118,17 @@ payrollRecordSchema.index({ crewMember: 1, payPeriodEndDate: -1 });
 payrollRecordSchema.index({ status: 1 });
 payrollRecordSchema.index({ paymentDate: -1 });
 
-// Pre-save hook to calculate deductionsTotal and netPay
+// Pre-save hook to calculate totals
 payrollRecordSchema.pre('save', function(next) {
-  if (this.isModified('deductions') || this.isModified('grossPay')) {
-    this.deductionsTotal = this.deductions.reduce((acc, curr) => acc + curr.amount, 0);
-    this.netPay = this.grossPay - this.deductionsTotal;
+  if (this.isModified('earnings') || this.isModified('statutoryDeductions') || this.isModified('saccoDeductions') || this.isModified('otherDeductions')) {
+    this.grossPay = this.earnings.reduce((acc, curr) => acc + curr.amount, 0);
+
+    const statutoryTotal = Object.values(this.statutoryDeductions.toObject() || {}).reduce((acc, curr) => acc + curr, 0);
+    const saccoTotal = Object.values(this.saccoDeductions.toObject() || {}).reduce((acc, curr) => acc + curr, 0);
+    const otherTotal = this.otherDeductions.reduce((acc, curr) => acc + curr.amount, 0);
+
+    this.totalDeductions = statutoryTotal + saccoTotal + otherTotal;
+    this.netPay = this.grossPay - this.totalDeductions;
   }
   next();
 });

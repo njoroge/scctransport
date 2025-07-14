@@ -20,6 +20,8 @@ import WelfarePage from './pages/WelfarePage.jsx';
 import PayrollPage from './pages/PayrollPage.jsx';         // Import PayrollPage
 import IDVerificationPage from './pages/IDVerificationPage.jsx'; // Import IDVerificationPage
 import RealTimeTrackingPage from './pages/RealTimeTrackingPage.jsx'; // Import RealTimeTrackingPage
+import EmployeeManagementPage from './pages/EmployeeManagementPage.jsx';
+import PayslipPage from './pages/PayslipPage.jsx';
 
 import { AuthContext } from './context/AuthContext.jsx';
 

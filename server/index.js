@@ -12,6 +12,7 @@ const welfareRoutes = require('./routes/welfareRoutes');
 const payrollRoutes = require('./routes/payrollRoutes'); // Import payroll routes
 const verificationRoutes = require('./routes/verificationRoutes'); // Import verification routes
 const gpsDataRoutes = require('./routes/gpsDataRoutes'); // Import GPS data routes
+const employeeRoutes = require('./routes/employeeRoutes'); // Import employee routes
 
 // Import error handling middleware
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
@@ -39,6 +40,7 @@ app.use('/api/welfare', welfareRoutes);
 app.use('/api/payroll', payrollRoutes); // Mount payroll routes
 app.use('/api/verification', verificationRoutes); // Mount verification routes
 app.use('/api/gps-data', gpsDataRoutes); // Mount GPS data routes
+app.use('/api/employees', employeeRoutes);
 
 
 // Error Handling Middleware (should be last in the middleware stack)

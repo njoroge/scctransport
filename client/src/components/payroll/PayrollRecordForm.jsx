@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
 import payrollService from '../../services/payrollService.js';
 import { AuthContext } from '../../context/AuthContext.jsx';
-// import userService from '../../services/userService'; // To fetch crew members
+import EarningsInput from './EarningsInput';
+import OtherDeductionsInput from './OtherDeductionsInput';
 
 const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing }) => {
-  const initialDeductionState = { type: '', description: '', amount: '' };
   const initialFormState = {
-    crewMember: '', // User ID of the crew member
+    crewMember: '',
     payPeriodStartDate: '',
     payPeriodEndDate: '',
-    grossPay: '',
-    deductions: [initialDeductionState],
+    earnings: [{ type: 'basic', amount: '', description: '' }],
+    saccoDeductions: {
+      shares: '',
+      loanRepayment: '',
+      memberDeposits: '',
+    },
+    otherDeductions: [{ type: '', amount: '', description: '' }],
     paymentMethod: 'Bank Transfer',
     referenceNumber: '',
     status: 'Pending',
@@ -22,9 +27,8 @@ const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  // const [crewMembers, setCrewMembers] = useState([]); // For dropdown later
 
-  const { user } = useContext(AuthContext); // For 'generatedBy'
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     if (editingRecord) {
@@ -32,8 +36,9 @@ const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing
         crewMember: editingRecord.crewMember._id || editingRecord.crewMember,
         payPeriodStartDate: new Date(editingRecord.payPeriodStartDate).toISOString().split('T')[0],
         payPeriodEndDate: new Date(editingRecord.payPeriodEndDate).toISOString().split('T')[0],
-        grossPay: editingRecord.grossPay,
-        deductions: editingRecord.deductions && editingRecord.deductions.length > 0 ? editingRecord.deductions : [initialDeductionState],
+        earnings: editingRecord.earnings.length > 0 ? editingRecord.earnings : [{ type: 'basic', amount: '', description: '' }],
+        saccoDeductions: editingRecord.saccoDeductions || { shares: '', loanRepayment: '', memberDeposits: '' },
+        otherDeductions: editingRecord.otherDeductions.length > 0 ? editingRecord.otherDeductions : [{ type: '', amount: '', description: '' }],
         paymentMethod: editingRecord.paymentMethod,
         referenceNumber: editingRecord.referenceNumber || '',
         status: editingRecord.status,
@@ -45,43 +50,24 @@ const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing
     }
   }, [editingRecord]);
 
-  // Fetch crew members for dropdown - Placeholder
-  // useEffect(() => { /* fetch crew members */ }, []);
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleDeductionChange = (index, e) => {
-    const updatedDeductions = formData.deductions.map((deduction, i) =>
-      index === i ? { ...deduction, [e.target.name]: e.target.value } : deduction
-    );
-    setFormData({ ...formData, deductions: updatedDeductions });
-  };
-
-  const addDeduction = () => {
+  const handleSaccoDeductionChange = (e) => {
     setFormData({
       ...formData,
-      deductions: [...formData.deductions, { ...initialDeductionState }],
+      saccoDeductions: {
+        ...formData.saccoDeductions,
+        [e.target.name]: e.target.value,
+      },
     });
   };
 
-  const removeDeduction = (index) => {
-    const filteredDeductions = formData.deductions.filter((_, i) => i !== index);
-    setFormData({ ...formData, deductions: filteredDeductions.length > 0 ? filteredDeductions : [initialDeductionState] });
-  };
-
-  const calculateNetPay = () => {
-    const gross = parseFloat(formData.grossPay) || 0;
-    const totalDeductions = formData.deductions.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
-    return (gross - totalDeductions).toFixed(2);
-  };
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.crewMember || !formData.payPeriodStartDate || !formData.payPeriodEndDate || !formData.grossPay) {
-      setError('Crew Member, Pay Period Dates, and Gross Pay are required.');
+    if (!formData.crewMember || !formData.payPeriodStartDate || !formData.payPeriodEndDate) {
+      setError('Crew Member and Pay Period Dates are required.');
       return;
     }
 
@@ -91,13 +77,19 @@ const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing
 
     const recordData = {
       ...formData,
-      grossPay: parseFloat(formData.grossPay),
-      deductions: formData.deductions
-        .filter(d => d.type && d.amount) // Only include deductions with type and amount
+      earnings: formData.earnings
+        .filter(e => e.type && e.amount)
+        .map(e => ({ ...e, amount: parseFloat(e.amount) })),
+      saccoDeductions: {
+        shares: parseFloat(formData.saccoDeductions.shares) || 0,
+        loanRepayment: parseFloat(formData.saccoDeductions.loanRepayment) || 0,
+        memberDeposits: parseFloat(formData.saccoDeductions.memberDeposits) || 0,
+      },
+      otherDeductions: formData.otherDeductions
+        .filter(d => d.type && d.amount)
         .map(d => ({ ...d, amount: parseFloat(d.amount) })),
       generatedBy: user._id,
     };
-    // Net pay and deductionsTotal will be calculated by backend pre-save hook
 
     try {
       let savedRecord;
@@ -114,11 +106,10 @@ const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing
       }
 
       if (!editingRecord) {
-        setFormData(initialFormState); // Reset form
+        setFormData(initialFormState);
       } else if (clearEditing) {
         clearEditing();
       }
-
     } catch (err) {
       setError(err.message || 'Failed to save payroll record.');
     } finally {
@@ -148,42 +139,50 @@ const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing
       <div>
         <label htmlFor="basisOfPayment">Basis of Payment:</label>
         <select name="basisOfPayment" value={formData.basisOfPayment} onChange={handleChange}>
-            <option value="Fixed Rate">Fixed Rate</option>
-            <option value="Commission">Commission</option>
-            <option value="Hourly">Hourly</option>
-            <option value="Daily Rate">Daily Rate</option>
-            <option value="Trip Rate">Trip Rate</option>
-            <option value="Mixed">Mixed</option>
-            <option value="Other">Other</option>
+          <option value="Fixed Rate">Fixed Rate</option>
+          <option value="Commission">Commission</option>
+          <option value="Hourly">Hourly</option>
+          <option value="Daily Rate">Daily Rate</option>
+          <option value="Trip Rate">Trip Rate</option>
+          <option value="Mixed">Mixed</option>
+          <option value="Other">Other</option>
         </select>
       </div>
+
+      <EarningsInput earnings={formData.earnings} setEarnings={(earnings) => setFormData({ ...formData, earnings })} />
+
+      <h4>SACCO Deductions</h4>
       <div>
-        <label htmlFor="grossPay">Gross Pay:</label>
-        <input type="number" name="grossPay" value={formData.grossPay} onChange={handleChange} required min="0" step="0.01" />
+        <input
+          type="number"
+          name="shares"
+          value={formData.saccoDeductions.shares}
+          onChange={handleSaccoDeductionChange}
+          placeholder="Shares"
+          min="0"
+          step="0.01"
+        />
+        <input
+          type="number"
+          name="loanRepayment"
+          value={formData.saccoDeductions.loanRepayment}
+          onChange={handleSaccoDeductionChange}
+          placeholder="Loan Repayment"
+          min="0"
+          step="0.01"
+        />
+        <input
+          type="number"
+          name="memberDeposits"
+          value={formData.saccoDeductions.memberDeposits}
+          onChange={handleSaccoDeductionChange}
+          placeholder="Member Deposits"
+          min="0"
+          step="0.01"
+        />
       </div>
 
-      <h4>Deductions</h4>
-      {formData.deductions.map((deduction, index) => (
-        <div key={index} style={{ border: '1px dashed #ccc', padding: '10px', marginBottom: '10px' }}>
-          <label htmlFor={`deductionType-${index}`}>Deduction Type:</label>
-          <input type="text" name="type" id={`deductionType-${index}`} value={deduction.type} onChange={(e) => handleDeductionChange(index, e)} placeholder="e.g., NSSF, Loan" />
-
-          <label htmlFor={`deductionDesc-${index}`}>Description (Optional):</label>
-          <input type="text" name="description" id={`deductionDesc-${index}`} value={deduction.description} onChange={(e) => handleDeductionChange(index, e)} />
-
-          <label htmlFor={`deductionAmount-${index}`}>Amount:</label>
-          <input type="number" name="amount" id={`deductionAmount-${index}`} value={deduction.amount} onChange={(e) => handleDeductionChange(index, e)} min="0" step="0.01" />
-
-          {formData.deductions.length > 1 && (
-            <button type="button" onClick={() => removeDeduction(index)} className="btn btn-danger btn-sm mt-1">Remove Deduction</button>
-          )}
-        </div>
-      ))}
-      <button type="button" onClick={addDeduction} className="btn btn-info btn-sm mb-2">Add Deduction</button>
-
-      <div>
-          <p><strong>Calculated Net Pay: {calculateNetPay()}</strong></p>
-      </div>
+      <OtherDeductionsInput otherDeductions={formData.otherDeductions} setOtherDeductions={(otherDeductions) => setFormData({ ...formData, otherDeductions })} />
 
       <div>
         <label htmlFor="paymentMethod">Payment Method:</label>
@@ -219,9 +218,9 @@ const PayrollRecordForm = ({ onRecordAddedOrUpdated, editingRecord, clearEditing
         {loading ? (editingRecord ? 'Updating...' : 'Creating...') : (editingRecord ? 'Update Record' : 'Create Record')}
       </button>
       {editingRecord && (
-          <button type="button" onClick={clearEditing} className="btn btn-secondary ms-2">
-              Cancel Edit
-          </button>
+        <button type="button" onClick={clearEditing} className="btn btn-secondary ms-2">
+          Cancel Edit
+        </button>
       )}
     </form>
   );

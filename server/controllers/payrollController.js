@@ -1,9 +1,10 @@
 const PayrollRecord = require('../models/PayrollRecordModel');
 const User = require('../models/UserModel'); // For validating crew member
 const asyncHandler = require('express-async-handler');
+const { calculateStatutoryDeductions } = require('../services/payrollCalculationService');
 
 /**
- * @desc    Create a new payroll record (manual entry for now)
+ * @desc    Create a new payroll record
  * @route   POST /api/payroll/records
  * @access  Private (Admin/Payroll Staff)
  */
@@ -12,8 +13,9 @@ const createPayrollRecord = asyncHandler(async (req, res) => {
     crewMember, // User ID
     payPeriodStartDate,
     payPeriodEndDate,
-    grossPay,
-    deductions, // Array of { type, description, amount }
+    earnings, // [{ type, amount, description }]
+    saccoDeductions, // { shares, loanRepayment, memberDeposits }
+    otherDeductions, // [{ type, amount, description }]
     paymentMethod,
     referenceNumber,
     status,
@@ -22,13 +24,12 @@ const createPayrollRecord = asyncHandler(async (req, res) => {
   } = req.body;
 
   // Basic validation
-  if (!crewMember || !payPeriodStartDate || !payPeriodEndDate || grossPay === undefined) {
+  if (!crewMember || !payPeriodStartDate || !payPeriodEndDate || !earnings) {
     res.status(400);
-    throw new Error('Missing required fields: crewMember, payPeriodStartDate, payPeriodEndDate, grossPay.');
+    throw new Error('Missing required fields: crewMember, payPeriodStartDate, payPeriodEndDate, earnings.');
   }
 
-  // Crew member validation (role check) is handled by pre-save hook in PayrollRecordModel.
-  // Still, good to check existence here for early exit.
+  // Crew member validation
   const crewUser = await User.findById(crewMember);
   if (!crewUser) {
       res.status(404);
@@ -40,19 +41,25 @@ const createPayrollRecord = asyncHandler(async (req, res) => {
       throw new Error(`User ${crewUser.name} (Role: ${crewUser.role}) is not a valid crew member type for payroll.`);
   }
 
-  // Deductions total and net pay are calculated by pre-save hook.
+  const grossPay = earnings.reduce((acc, curr) => acc + curr.amount, 0);
+
+  const statutoryDeductions = calculateStatutoryDeductions(grossPay);
+
   const payrollRecord = new PayrollRecord({
     crewMember,
     payPeriodStartDate,
     payPeriodEndDate,
+    earnings,
     grossPay,
-    deductions: deductions || [], // Ensure deductions is an array
+    statutoryDeductions,
+    saccoDeductions,
+    otherDeductions,
     paymentMethod,
     referenceNumber,
     status,
     notes,
     basisOfPayment,
-    generatedBy: req.user._id, // Logged-in user generating this record
+    generatedBy: req.user._id,
   });
 
   const createdRecord = await payrollRecord.save();
