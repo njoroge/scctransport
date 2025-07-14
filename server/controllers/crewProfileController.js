@@ -87,8 +87,17 @@ const createCrewProfile = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getAllCrewProfiles = asyncHandler(async (req, res) => {
-  // TODO: Pagination, filtering by role (driver/conductor), status
-  const profiles = await CrewProfile.find({})
+  const { role } = req.query;
+  let query = {};
+  if (role) {
+    // This requires a more complex query because the role is on the populated 'user' document.
+    // One way is to find users with the role first, then find profiles for those users.
+    const usersWithRole = await User.find({ role }).select('_id');
+    const userIds = usersWithRole.map(user => user._id);
+    query.user = { $in: userIds };
+  }
+
+  const profiles = await CrewProfile.find(query)
     .populate('user', 'name email role memberId isActive') // Populate user details
     .populate('createdBy', 'name');
   res.json(profiles);

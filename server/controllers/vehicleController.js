@@ -19,8 +19,8 @@ const registerVehicle = asyncHandler(async (req, res) => {
     inspectionDetails,
     insuranceDetails,
     owner, // UserId of the owner
-    assignedDriver, // UserId of the driver
-    assignedConductor, // UserId of the conductor
+    driver, // UserId of the driver
+    conductors, // Array of conductor UserIds
     status,
     ntsaRequirements,
   } = req.body;
@@ -65,24 +65,24 @@ const registerVehicle = asyncHandler(async (req, res) => {
     }
   }
 
-  // Validate assignedDriver if provided
-  if (assignedDriver) {
-    const driverUser = await User.findById(assignedDriver);
+  // Validate driver if provided
+  if (driver) {
+    const driverUser = await User.findById(driver);
     if (!driverUser || driverUser.role !== 'driver') {
       res.status(400);
-      throw new Error(`Assigned driver ID ${assignedDriver} is not a valid driver.`);
+      throw new Error(`Assigned driver ID ${driver} is not a valid driver.`);
     }
-    // Check if driver has a crew profile? (Optional enhancement)
   }
 
-  // Validate assignedConductor if provided
-  if (assignedConductor) {
-    const conductorUser = await User.findById(assignedConductor);
-    if (!conductorUser || conductorUser.role !== 'conductor') {
-      res.status(400);
-      throw new Error(`Assigned conductor ID ${assignedConductor} is not a valid conductor.`);
+  // Validate conductors if provided
+  if (conductors && conductors.length > 0) {
+    for (const conductorId of conductors) {
+      const conductorUser = await User.findById(conductorId);
+      if (!conductorUser || conductorUser.role !== 'conductor') {
+        res.status(400);
+        throw new Error(`Assigned conductor ID ${conductorId} is not a valid conductor.`);
+      }
     }
-    // Check if conductor has a crew profile? (Optional enhancement)
   }
 
 
@@ -96,8 +96,8 @@ const registerVehicle = asyncHandler(async (req, res) => {
     inspectionDetails,
     insuranceDetails,
     owner,
-    assignedDriver,
-    assignedConductor,
+    driver,
+    conductors,
     status,
     ntsaRequirements,
     createdBy: req.user._id, // Logged-in user creating this record
@@ -116,8 +116,8 @@ const getAllVehicles = asyncHandler(async (req, res) => {
   // TODO: Add pagination, filtering (by status, owner, route etc.), sorting
   const vehicles = await Vehicle.find({})
     .populate('owner', 'name memberId')
-    .populate('assignedDriver', 'name')
-    .populate('assignedConductor', 'name')
+    .populate('driver', 'name')
+    .populate('conductors', 'name')
     .populate('routes', 'routeName routeNumber');
   res.json(vehicles);
 });
@@ -130,8 +130,8 @@ const getAllVehicles = asyncHandler(async (req, res) => {
 const getVehicleById = asyncHandler(async (req, res) => {
   const vehicle = await Vehicle.findById(req.params.id)
     .populate('owner', 'name memberId email phoneNumber')
-    .populate('assignedDriver', 'name email phoneNumber') // Consider populating CrewProfile too
-    .populate('assignedConductor', 'name email phoneNumber') // Consider populating CrewProfile too
+    .populate('driver', 'name email phoneNumber') // Consider populating CrewProfile too
+    .populate('conductors', 'name email phoneNumber') // Consider populating CrewProfile too
     .populate('routes', 'routeName routeNumber standardFare')
     .populate('createdBy', 'name email')
     .populate('updatedBy', 'name email');
@@ -170,8 +170,8 @@ const updateVehicle = asyncHandler(async (req, res) => {
     inspectionDetails,
     insuranceDetails,
     owner,
-    assignedDriver,
-    assignedConductor,
+    driver,
+    conductors,
     status,
     ntsaRequirements,
   } = req.body;
@@ -204,29 +204,30 @@ const updateVehicle = asyncHandler(async (req, res) => {
     vehicle.routes = routes;
   }
 
-  // Validate assignedDriver if changed
-  if (assignedDriver && (!vehicle.assignedDriver || assignedDriver.toString() !== vehicle.assignedDriver.toString())) {
-    const driverUser = await User.findById(assignedDriver);
+  // Validate driver if changed
+  if (driver && (!vehicle.driver || driver.toString() !== vehicle.driver.toString())) {
+    const driverUser = await User.findById(driver);
     if (!driverUser || driverUser.role !== 'driver') {
       res.status(400);
-      throw new Error(`New assigned driver ID ${assignedDriver} is not a valid driver.`);
+      throw new Error(`New assigned driver ID ${driver} is not a valid driver.`);
     }
-    vehicle.assignedDriver = assignedDriver;
-  } else if (req.body.hasOwnProperty('assignedDriver') && assignedDriver === null) { // Explicitly unassigning
-    vehicle.assignedDriver = null;
+    vehicle.driver = driver;
+  } else if (req.body.hasOwnProperty('driver') && driver === null) { // Explicitly unassigning
+    vehicle.driver = null;
   }
 
-
-  // Validate assignedConductor if changed
-  if (assignedConductor && (!vehicle.assignedConductor || assignedConductor.toString() !== vehicle.assignedConductor.toString())) {
-    const conductorUser = await User.findById(assignedConductor);
-    if (!conductorUser || conductorUser.role !== 'conductor') {
-      res.status(400);
-      throw new Error(`New assigned conductor ID ${assignedConductor} is not a valid conductor.`);
+  // Validate conductors if changed
+  if (conductors) {
+    if (conductors.length > 0) {
+      for (const conductorId of conductors) {
+        const conductorUser = await User.findById(conductorId);
+        if (!conductorUser || conductorUser.role !== 'conductor') {
+          res.status(400);
+          throw new Error(`New assigned conductor ID ${conductorId} is not a valid conductor.`);
+        }
+      }
     }
-    vehicle.assignedConductor = assignedConductor;
-  } else if (req.body.hasOwnProperty('assignedConductor') && assignedConductor === null) { // Explicitly unassigning
-    vehicle.assignedConductor = null;
+    vehicle.conductors = conductors;
   }
 
 
