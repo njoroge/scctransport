@@ -2,7 +2,8 @@ import React, { useEffect, useContext } from 'react';
 import { Switch, Route, useLocation, Redirect } from 'react-router-dom'; // Added Redirect
 import './App.css';
 
-import Sidebar from './components/Sidebar.jsx'; // Changed from Navbar
+import Navbar from './components/Navbar.jsx';
+import Sidebar from './components/Sidebar.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
 
 import HomePage from './pages/HomePage.jsx';
@@ -44,7 +45,9 @@ function App() {
   return (
     <div className="app-container"> {/* New main wrapper */}
       <Sidebar />
-      <div className="main-content"> {/* Wrapper for page content */}
+      <div className="main-container">
+        <Navbar />
+        <div className="main-content">
         {/* The old "container" class might still be useful inside main-content for centering page content */}
         {/* For now, main-content will just be the area to the right of the sidebar */}
         <Switch>
@@ -91,8 +94,9 @@ function App() {
             </div>
           </Route>
         </Switch>
-      </div> {/* End of main-content */}
-    </div> /* End of app-container */
+        </div>
+      </div>
+    </div>
   );
 }
 

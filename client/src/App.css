@@ -154,18 +154,21 @@ table button {
   flex-shrink: 0; /* Prevent sidebar from shrinking */
 }
 
+.main-container {
+  flex-grow: 1;
+  margin-left: 220px; /* Same as sidebar width */
+}
+
 .main-content {
-  flex-grow: 1; /* Allow main content to take up remaining space */
-  margin-left: 220px; /* Same as sidebar width, adjust if sidebar width changes */
   padding: 20px;
-  min-height: 100vh; /* Ensure it takes full viewport height */
+  min-height: calc(100vh - 70px); /* Adjust based on navbar height */
   box-sizing: border-box;
-  background-color: #f8f9fa; /* A light background for the content area */
+  background-color: var(--secondary-color-alt);
 }
 
 /* Responsive consideration: On smaller screens, sidebar might hide or stack */
 @media (max-width: 768px) {
-  .main-content {
+  .main-container {
     margin-left: 0; /* Remove margin if sidebar is hidden or stacked */
   }
   /* Further responsive styles for sidebar itself would be needed if it's to be collapsible */
