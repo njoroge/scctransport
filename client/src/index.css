@@ -15,14 +15,42 @@ code {
 
 /* Light Theme */
 body.light {
-  background-color: #ffffff;
-  color: #000000;
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --primary-color: #337ab7;
+  --primary-color-hover: #23527c;
+  --secondary-color: #f4f4f4;
+  --secondary-color-alt: #e9ecef;
+  --border-color: #ddd;
+  --table-header-bg: #f0f0f0;
+  --table-row-even-bg: #f9f9f9;
+  --success-color: #5cb85c;
+  --success-color-hover: #4cae4c;
+  --error-bg: #fdd;
+  --error-text: red;
+  --sidebar-bg: #2c3e50;
+  --sidebar-text: #ecf0f1;
+  --sidebar-link-hover: #34495e;
 }
 
 /* Dark Theme */
 body.dark {
-  background-color: #121212;
-  color: #ffffff;
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --primary-color: #337ab7;
+  --primary-color-hover: #23527c;
+  --secondary-color: #1e1e1e;
+  --secondary-color-alt: #2c2c2c;
+  --border-color: #333333;
+  --table-header-bg: #1e1e1e;
+  --table-row-even-bg: #2c2c2c;
+  --success-color: #5cb85c;
+  --success-color-hover: #4cae4c;
+  --error-bg: #5a1e1e;
+  --error-text: #ff8a8a;
+  --sidebar-bg: #1e1e1e;
+  --sidebar-text: #ecf0f1;
+  --sidebar-link-hover: #34495e;
 }
 
 /* Add more specific styles for components as needed */
