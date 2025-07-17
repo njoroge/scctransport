@@ -4,8 +4,6 @@ body {
   line-height: 1.6;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
-  color: #333;
 }
 
 .container {
@@ -13,18 +11,18 @@ body {
   margin: auto;
   overflow: hidden;
   padding: 0 20px;
-  background-color: #fff;
+  background-color: var(--secondary-color);
   min-height: 80vh; /* Ensure container takes up height */
   padding-bottom: 20px;
 }
 
 h1, h2, h3 {
-  color: #333;
+  color: var(--text-color);
   margin-bottom: 0.7rem;
 }
 
 a {
-  color: #337ab7;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -164,6 +162,7 @@ table button {
   min-height: calc(100vh - 70px); /* Adjust based on navbar height */
   box-sizing: border-box;
   background-color: var(--secondary-color-alt);
+  color: var(--text-color);
 }
 
 /* Responsive consideration: On smaller screens, sidebar might hide or stack */

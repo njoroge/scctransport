@@ -6,7 +6,6 @@ import App from './App.jsx';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { ThemeProvider } from './ThemeContext.jsx'; // Import ThemeProvider
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 
 const container = document.getElementById('root');
 const root = createRoot(container);
