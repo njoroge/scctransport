@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/gps-data';
+const API_URL = 'http://localhost:18080/api/gps-data';
 
 // Fetch the latest GPS data for all vehicles
 export const getLatestGpsData = async () => {

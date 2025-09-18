@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/users'; // Using proxy, so relative path
+const API_URL = 'http://localhost:18080/api/users';
 
 // Set token in axios defaults if available (e.g. on app load)
 // This can be done once in a central place, like AuthContext or main App component.
