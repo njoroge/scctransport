@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/routes'; // Using proxy
+const API_URL = 'http://localhost:18080/api/routes';
 
 // Axios instance should be configured with Authorization header
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/employees'; // This endpoint doesn't exist yet
+const API_URL = 'http://localhost:18080/api/employees';
 
 // Axios instance should be configured with Authorization header by AuthContext
 
@@ -19,7 +19,7 @@ const createEmployee = async (employeeData) => {
 
 const getAllEmployees = async () => {
   try {
-    const response = await axios.get(API_YRL);
+    const response = await axios.get(API_URL);
     return response.data;
   } catch (error) {
     const message =

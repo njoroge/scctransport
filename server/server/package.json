@@ -1,9 +1,0 @@
-{
-  "devDependencies": {
-    "@shelf/jest-mongodb": "^5.2.2",
-    "cross-env": "^7.0.3",
-    "jest": "^30.0.4",
-    "mongodb-memory-server": "^10.1.4",
-    "supertest": "^7.1.3"
-  }
-}

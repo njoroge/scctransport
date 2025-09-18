@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/welfare/contributions'; // Base URL for welfare contributions
+const API_URL = 'http://localhost:18080/api/welfare/contributions'; // Base URL for welfare contributions
 
 // Axios instance should already be configured with Authorization header
 // by authService/AuthContext if a user is logged in.

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/crew-profiles'; // Using proxy
+const API_URL = 'http://localhost:18080/api/crew-profiles';
 
 // Axios instance should already be configured with Authorization header by authService/AuthContext
 

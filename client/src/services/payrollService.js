@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/payroll/records'; // Base URL for payroll records
+const API_URL = 'http://localhost:18080/api/payroll/records'; // Base URL for payroll records
 
 // Axios instance should be configured with Authorization header by AuthContext
 
