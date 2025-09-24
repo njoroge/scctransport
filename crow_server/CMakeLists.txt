@@ -11,7 +11,7 @@ add_library(psv_lib src/controllers/AuthController.cpp src/controllers/VehicleCo
 
 target_include_directories(psv_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src /app/crow_server/build/vcpkg/installed/x64-linux/include/jwt-cpp/traits/kazuho-picojson)
 
-target_link_libraries(psv_lib PUBLIC Crow::Crow $<IF:$<TARGET_EXISTS:mongo::mongocxx_static>,mongo::mongocxx_static,mongo::mongocxx_shared> jwt-cpp::jwt-cpp)
+target_link_libraries(psv_lib PUBLIC Crow::Crow $<IF:$<TARGET_EXISTS:mongo::mongocxx_static>,mongo::mongocxx_static,mongo::mongocxx_shared> jwt-cpp::jwt-cpp crypt)
 
 add_executable(psv_management main.cpp)
 target_link_libraries(psv_management PRIVATE psv_lib)

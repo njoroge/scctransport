@@ -1,28 +1,33 @@
 #include "AuthController.hpp"
 #include "jwt-cpp/jwt.h"
-#include <defaults.h>
+#include "defaults.h"
 #include "models/UserModel.hpp"
 #include <bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/json.hpp>
 #include <mongocxx/exception/exception.hpp>
+#include <crypt.h>
 
-// In a real application, you would use a proper password hashing library like bcrypt.
-// For simplicity, we will just store passwords in plaintext.
 std::string hash_password(const std::string& password) {
-    return password;
+    char salt[128];
+    crypt_gensalt_rn("$2a$", 10, NULL, 0, salt, sizeof(salt));
+    return crypt(password.c_str(), salt);
 }
 
 bool verify_password(const std::string& password, const std::string& hash) {
-    return password == hash;
+    return strcmp(crypt(password.c_str(), hash.c_str()), hash.c_str()) == 0;
 }
 
 std::string generate_token(const std::string& user_id, const std::string& role) {
+    const char* secret = std::getenv("JWT_SECRET");
+    if (!secret) {
+        throw std::runtime_error("JWT_SECRET environment variable not set");
+    }
     auto token = jwt::create()
         .set_issuer("auth0")
         .set_type("JWS")
         .set_payload_claim("user_id", jwt::claim(user_id))
         .set_payload_claim("role", jwt::claim(role))
-        .sign(jwt::algorithm::hs256{"secret"});
+        .sign(jwt::algorithm::hs256{secret});
     return token;
 }
 
