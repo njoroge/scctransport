@@ -1,13 +1,99 @@
+# PSV Management App
 
-# Getting Started with Create React App
+This is a web application for managing Public Service Vehicles (PSVs). It consists of a C++ backend built with the Crow framework and a React frontend.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Backend (C++ Crow)
 
-## Available Scripts
+The backend is a C++ application built with the [Crow](https://crowcpp.org/) framework. It uses MongoDB as the database.
 
-In the project directory, you can run:
+### Prerequisites
 
-### `npm start`
+- C++17 compiler (e.g., GCC, Clang)
+- [CMake](https://cmake.org/) (version 3.10 or higher)
+- [vcpkg](https://github.com/microsoft/vcpkg)
+
+### Setup
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone <repository-url>
+    cd <repository-directory>
+    ```
+
+2.  **Install dependencies using vcpkg:**
+
+    ```bash
+    cd crow_server
+    ./vcpkg/vcpkg install
+    ```
+
+    This will install all the required C++ libraries, including Crow, the MongoDB C++ driver, and GTest.
+
+### Build
+
+1.  **Create a build directory:**
+
+    ```bash
+    mkdir build
+    cd build
+    ```
+
+2.  **Run CMake:**
+
+    ```bash
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+    ```
+
+3.  **Run Make:**
+
+    ```bash
+    make
+    ```
+
+### Run
+
+1.  **Start the MongoDB server:**
+
+    ```bash
+    sudo systemctl start mongod
+    ```
+
+2.  **Set the JWT_SECRET environment variable:**
+
+    ```bash
+    export JWT_SECRET=my_super_secret_key
+    ```
+
+3.  **Run the backend server:**
+
+    ```bash
+    ./psv_management
+    ```
+
+    The server will start on `http://localhost:18080`.
+
+### Tests
+
+1.  **Run the tests:**
+
+    ```bash
+    ./tests
+    ```
+
+## Frontend (React)
+
+The frontend is a React application bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+### Available Scripts
+
+In the `client` directory, you can run:
+
+#### `npm install`
+
+Installs the required dependencies for the client application.
+
+#### `npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
@@ -15,12 +101,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
+#### `npm test`
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+#### `npm run build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -29,43 +115,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
